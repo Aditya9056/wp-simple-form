@@ -156,8 +156,10 @@ See the [open issues](https://github.com/aditya9056/wp-simple-form/issues) for a
 ## Contributing
 
 ### Coding Standards
-* WordPress
+* WordPress (WPCS)
 
+#### `phpcs` may show some errors but you can safely ignore them for now.
+  
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
