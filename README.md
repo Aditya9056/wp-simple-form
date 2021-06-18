@@ -8,15 +8,15 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/aditya9056/a-wordpress-theme">
-    <img src="public/images/contact-form.jpg" alt="WP Simple Form">
+  <a href="https://github.com/Aditya9056/wp-simple-form">
+    <img src="public/images/contact-form.png" alt="WP Simple Form" width="100">
   </a>
 
   <h3 align="center">WP Simple Form</h3>
 
   <p align="center">
     It's a Simple WordPress plugin.
-    <!-- <a href="https://github.com/aditya9056/a-wordpress-theme/issues">Request Feature</a> -->
+    <!-- <a href="https://github.com/Aditya9056/wp-simple-form/issues">Request Feature</a> -->
   </p>
 </p>
 
@@ -87,7 +87,7 @@ To get a local copy up and running follow these simple steps.
 1. Clone the repo in `plugin` folder in `wordpress-content/plugins` folder.
 
    ```sh
-   git clone https://github.com/Aditya9056/a-wordpress-theme
+   git clone https://github.com/Aditya9056/wp-simple-form
    ```
 
 ## Usage
@@ -169,19 +169,19 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/Aditya9056/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/Aditya9056/a-wordpress-theme/graphs/contributors
+[contributors-url]: https://github.com/Aditya9056/wp-simple-form/graphs/contributors
 
 [forks-shield]: https://img.shields.io/github/forks/Aditya9056/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/Aditya9056/a-wordpress-theme/network/members
+[forks-url]: https://github.com/Aditya9056/wp-simple-form/network/members
 
 [stars-shield]: https://img.shields.io/github/stars/Aditya9056/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/Aditya9056/a-wordpress-theme/stargazers
+[stars-url]: https://github.com/Aditya9056/wp-simple-form/stargazers
 
 [issues-shield]: https://img.shields.io/github/issues/Aditya9056/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/Aditya9056/a-wordpress-theme/issues
+[issues-url]: https://github.com/Aditya9056/wp-simple-form/issues
 
 [license-shield]: https://img.shields.io/github/license/Aditya9056/a-wordpress-theme.svg?style=for-the-badge
-[license-url]: https://github.com/Aditya9056/a-wordpress-theme/blob/master/LICENSE.txt
+[license-url]: https://github.com/Aditya9056/wp-simple-form/blob/master/LICENSE.txt
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/iadityajain
