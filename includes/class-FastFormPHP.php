@@ -1,28 +1,41 @@
 <?php
 
-// v 0.8.6
-// https://github.com/joshcanhelp/php-form-builder
+// v 0.9.0
+/**
+ * Class FastFormPHP
+ */
+class FastFormPHP {
 
-class PhpFormBuilder {
-
-	// Stores all form inputs
+	/**
+	 * Stores all form inputs.
+	 *
+	 * @var array
+	 */
 	private $inputs = array();
 
-	// Stores all form attributes
+	/**
+	 * Stores all form attributes.
+	 *
+	 * @var array
+	 */
 	private $form = array();
 
-	// Does this form have a submit value?
+	/**
+	 * Does this form have a submit value?
+	 *
+	 * @var bool
+	 */
 	private $has_submit = false;
 
 	/**
 	 * Constructor function to set form action and attributes
 	 *
-	 * @param string $action
-	 * @param bool   $args
+	 * @param FastFormPHP $action string.
+	 * @param FastFormPHP $args bool.
 	 */
-	function __construct( $action = '', $args = false ) {
+	public function __construct( $action = '', $args = false ) {
 
-		// Default form attributes
+		// Default form attributes.
 		$defaults = array(
 			'action'       => $action,
 			'method'       => 'post',
@@ -37,18 +50,18 @@ class PhpFormBuilder {
 			'add_submit'   => true,
 		);
 
-		// Merge with arguments, if present
+		// Merge with arguments, if present.
 		if ( $args ) {
 			$settings = array_merge( $defaults, $args );
-		} // Otherwise, use the defaults wholesale
+		} // Otherwise, use the defaults wholesale.
 		else {
 			$settings = $defaults;
 		}
 
-		// Iterate through and save each option
+		// Iterate through and save each option.
 		foreach ( $settings as $key => $val ) {
 			// Try setting with user-passed setting
-			// If not, try the default with the same key name
+			// If not, try the default with the same key name.
 			if ( ! $this->set_att( $key, $val ) ) {
 				$this->set_att( $key, $defaults[ $key ] );
 			}
@@ -58,12 +71,12 @@ class PhpFormBuilder {
 	/**
 	 * Validate and set form
 	 *
-	 * @param string        $key A valid key; switch statement ensures validity
-	 * @param string | bool $val A valid value; validated for each key
+	 * @param string        $key A valid key; switch statement ensures validity.
+	 * @param string | bool $val A valid value; validated for each key.
 	 *
 	 * @return bool
 	 */
-	function set_att( $key, $val ) {
+	public function set_att( $key, $val ) {
 
 		switch ( $key ) :
 
@@ -71,19 +84,19 @@ class PhpFormBuilder {
 				break;
 
 			case 'method':
-				if ( ! in_array( $val, array( 'post', 'get' ) ) ) {
+				if ( ! in_array( $val, array( 'post', 'get' ), true ) ) {
 					return false;
 				}
 				break;
 
 			case 'enctype':
-				if ( ! in_array( $val, array( 'application/x-www-form-urlencoded', 'multipart/form-data' ) ) ) {
+				if ( ! in_array( $val, array( 'application/x-www-form-urlencoded', 'multipart/form-data' ), true ) ) {
 					return false;
 				}
 				break;
 
 			case 'markup':
-				if ( ! in_array( $val, array( 'html', 'xhtml' ) ) ) {
+				if ( ! in_array( $val, array( 'html', 'xhtml' ), true ) ) {
 					return false;
 				}
 				break;
@@ -112,8 +125,7 @@ class PhpFormBuilder {
 
 			default:
 				return false;
-
-	  endswitch;
+				endswitch;
 
 		$this->form[ $key ] = $val;
 
@@ -124,17 +136,17 @@ class PhpFormBuilder {
 	/**
 	 * Add an input field to the form for outputting later
 	 *
-	 * @param string $label
-	 * @param string $args
-	 * @param string $slug
+	 * @param string $label holds label.
+	 * @param string $args holds args.
+	 * @param string $slug holds the slug.
 	 */
-	function add_input( $label, $args = '', $slug = '' ) {
+	public function add_input( $label, $args = '', $slug = '' ) {
 
 		if ( empty( $args ) ) {
 			$args = array();
 		}
 
-		// Create a valid id or class attribute
+		// Create a valid id or class attribute.
 		if ( empty( $slug ) ) {
 			$slug = $this->_make_slug( $label );
 		}
@@ -168,7 +180,7 @@ class PhpFormBuilder {
 		);
 
 		// Combined defaults and arguments
-		// Arguments override defaults
+		// Arguments override defaults.
 		$args                  = array_merge( $defaults, $args );
 		$this->inputs[ $slug ] = $args;
 
@@ -177,11 +189,11 @@ class PhpFormBuilder {
 	/**
 	 * Add multiple inputs to the input queue
 	 *
-	 * @param $arr
+	 * @param FastFormPHP $arr holds the arguments list.
 	 *
 	 * @return bool
 	 */
-	function add_inputs( $arr ) {
+	public function add_inputs( $arr ) {
 
 		if ( ! is_array( $arr ) ) {
 			return false;
@@ -201,14 +213,15 @@ class PhpFormBuilder {
 	/**
 	 * Build the HTML for the form based on the input queue
 	 *
-	 * @param bool $echo Should the HTML be echoed or returned?
+	 * @param FastFormPHP bool $echo Should the HTML be echoed or returned?.
 	 *
 	 * @return string
 	 */
-	function build_form( $echo = true ) {
+	public function build_form( $echo = true ) {
 
 		$output = '';
 
+		// Adding form attributes.
 		if ( $this->form['form_element'] ) {
 			$output .= '<form method="' . $this->form['method'] . '"';
 
@@ -224,7 +237,7 @@ class PhpFormBuilder {
 				$output .= ' id="' . $this->form['id'] . '"';
 			}
 
-			if ( isset($this->form['class']) ) {
+			if ( isset( $this->form['class'] ) ) {
 				$output .= $this->_output_classes( $this->form['class'] );
 			}
 
@@ -235,7 +248,7 @@ class PhpFormBuilder {
 			$output .= '>';
 		}
 
-		// Add honeypot anti-spam field
+		// Add honeypot anti-spam field.
 		if ( $this->form['add_honeypot'] ) {
 			$this->add_input(
 				'Leave blank to submit',
@@ -252,7 +265,7 @@ class PhpFormBuilder {
 			);
 		}
 
-		// Add a WordPress nonce field
+		// Add a WordPress nonce field.
 		if ( $this->form['add_nonce'] && function_exists( 'wp_create_nonce' ) ) {
 			$this->add_input(
 				'WordPress nonce',
@@ -265,24 +278,29 @@ class PhpFormBuilder {
 			);
 		}
 
-		// Iterate through the input queue and add input HTML
+		// Iterate through the input queue and add input HTML.
 		foreach ( $this->inputs as $val ) :
 
-			$min_max_range = $element = $end = $attr = $field = $label_html = '';
+			$min_max_range = '';
+			$element       = '';
+			$end           = '';
+			$attr          = '';
+			$field         = '';
+			$label_html    = '';
 
-			// Automatic population of values using $_REQUEST data
+			// Automatic population of values using $_REQUEST data.
 			if ( $val['request_populate'] && isset( $_REQUEST[ $val['name'] ] ) ) {
 
 				// Can this field be populated directly?
-				if ( ! in_array( $val['type'], array( 'html', 'title', 'radio', 'checkbox', 'select', 'submit' ) ) ) {
+				if ( ! in_array( $val['type'], array( 'html', 'title', 'radio', 'checkbox', 'select', 'submit' ), true ) ) {
 					$val['value'] = $_REQUEST[ $val['name'] ];
 				}
 			}
 
-			// Automatic population for checkboxes and radios
+			// Automatic population for checkboxes and radios.
 			if (
 			$val['request_populate'] &&
-			( $val['type'] == 'radio' || $val['type'] == 'checkbox' ) &&
+			( 'radio' === $val['type'] || 'checkbox' === $val['type'] ) &&
 			empty( $val['options'] )
 			) {
 				$val['checked'] = isset( $_REQUEST[ $val['name'] ] ) ? true : $val['checked'];
@@ -334,12 +352,12 @@ class PhpFormBuilder {
 
 				case 'radio':
 				case 'checkbox':
-					// Special case for multiple check boxes
+					// Special case for multiple check boxes.
 					if ( count( $val['options'] ) > 0 ) :
 						$element = '';
 						foreach ( $val['options'] as $key => $opt ) {
-							  $slug = $this->_make_slug( $opt );
-							$end   .= sprintf(
+							$slug = $this->_make_slug( $opt );
+							$end .= sprintf(
 								'<input type="%s" name="%s[]" value="%s" id="%s"',
 								$val['type'],
 								$val['name'],
@@ -354,7 +372,7 @@ class PhpFormBuilder {
 								isset( $_REQUEST[ $val['name'] ] ) &&
 
 								// Is the selected item(s) in the $_REQUEST data?
-								in_array( $key, $_REQUEST[ $val['name'] ] )
+								in_array( $key, $_REQUEST[ $val['name'] ], true )
 							  ) {
 								$end .= ' checked';
 							}
@@ -365,7 +383,7 @@ class PhpFormBuilder {
 						break;
 				  endif;
 
-					// Used for all text fields (text, email, url, etc), single radios, single checkboxes, and submit
+					// Used for all text fields (text, email, url, etc), single radios, single checkboxes, and submit.
 				default:
 					$element = 'input';
 					$end    .= ' type="' . $val['type'] . '" value="' . $val['value'] . '"';
@@ -375,56 +393,56 @@ class PhpFormBuilder {
 
 			}
 
-			// Added a submit button, no need to auto-add one
-			if ( $val['type'] === 'submit' ) {
+			// Added a submit button, no need to auto-add one.
+			if ( 'submit' === $val['type'] ) {
 				$this->has_submit = true;
 			}
 
-			// Special number values for range and number types
-			if ( $val['type'] === 'range' || $val['type'] === 'number' ) {
+			// Special number values for range and number types.
+			if ( 'range' === $val['type'] || 'number' === $val['type'] ) {
 				$min_max_range .= ! empty( $val['min'] ) ? ' min="' . $val['min'] . '"' : '';
 				$min_max_range .= ! empty( $val['max'] ) ? ' max="' . $val['max'] . '"' : '';
 				$min_max_range .= ! empty( $val['step'] ) ? ' step="' . $val['step'] . '"' : '';
 			}
 
-			// Add an ID field, if one is present
+			// Add an ID field, if one is present.
 			$id = ! empty( $val['id'] ) ? ' id="' . $val['id'] . '"' : '';
 
-			// Output classes
+			// Output classes.
 			$class = $this->_output_classes( $val['class'] );
 
-			// Special HTML5 fields, if set
+			// Special HTML5 fields, if set.
 			$attr .= $val['autofocus'] ? ' autofocus' : '';
 			$attr .= $val['checked'] ? ' checked' : '';
 			$attr .= $val['required'] ? ' required' : '';
 
-			// Build the label
+			// Build the label.
 			if ( ! empty( $label_html ) ) {
 				$field .= $label_html;
-			} elseif ( $val['add_label'] && ! in_array( $val['type'], array( 'hidden', 'submit', 'title', 'html' ) ) ) {
+			} elseif ( $val['add_label'] && ! in_array( $val['type'], array( 'hidden', 'submit', 'title', 'html' ), true ) ) {
 				if ( $val['required'] ) {
 					$val['label'] .= ' <strong>*</strong>';
 				}
 				$field .= '<label for="' . $val['id'] . '">' . $val['label'] . '</label>';
 			}
 
-			// An $element was set in the $val['type'] switch statement above so use that
+			// An $element was set in the $val['type'] switch statement above so use that.
 			if ( ! empty( $element ) ) {
-				if ( $val['type'] === 'checkbox' ) {
+				if ( 'checkbox' === $val['type'] ) {
 					$field = '
           <' . $element . $id . ' name="' . $val['name'] . '"' . $min_max_range . $class . $attr . $end .
-					 $field;
+					$field;
 				} else {
 					$field .= '
           <' . $element . $id . ' name="' . $val['name'] . '"' . $min_max_range . $class . $attr . $end;
 				}
-				// Not a form element
+				// Not a form element.
 			} else {
 				$field .= $end;
 			}
 
-			// Parse and create wrap, if needed
-			if ( $val['type'] != 'hidden' && $val['type'] != 'html' ) :
+			// Parse and create wrap, if needed.
+			if ( 'hidden' !== $val['type'] && 'html' !== $val['type'] ) :
 
 				$wrap_before = $val['before_html'];
 				if ( ! empty( $val['wrap_tag'] ) ) {
@@ -441,23 +459,23 @@ class PhpFormBuilder {
 				}
 
 				$output .= $wrap_before . $field . $wrap_after;
-		  else :
-			  $output .= $field;
-		  endif;
+				else :
+					$output .= $field;
+				endif;
 
-	  endforeach;
+				endforeach;
 
-		// Auto-add submit button
+		// Auto-add submit button.
 		if ( ! $this->has_submit && $this->form['add_submit'] ) {
 			$output .= '<div class="form_field_wrap"><input type="submit" value="Submit" name="submit"></div>';
 		}
 
-		// Close the form tag if one was added
+		// Close the form tag if one was added.
 		if ( $this->form['form_element'] ) {
 			$output .= '</form>';
 		}
 
-		// Output or return?
+		// Is it Output or return ?
 		if ( $echo ) {
 			echo $output;
 		} else {
@@ -465,9 +483,9 @@ class PhpFormBuilder {
 		}
 	}
 
-	// Easy way to auto-close fields, if necessary
+	// Easy way to auto-close fields, if necessary.
 	function field_close() {
-		return $this->form['markup'] === 'xhtml' ? ' />' : '>';
+		return 'xhtml' === $this->form['markup'] ? ' />' : '>';
 	}
 
 	// Validates id and class attributes
@@ -476,14 +494,13 @@ class PhpFormBuilder {
 
 		$result = true;
 
-		// Check $name for correct characters
-		// "^[a-zA-Z0-9_-]*$"
+		// Check $name for correct characters.
+		// "^[a-zA-Z0-9_-]*$".
 
 		return $result;
-
 	}
 
-	// Create a slug from a label name
+	// Create a slug from a label name.
 	private function _make_slug( $string ) {
 
 		$result = '';
@@ -499,7 +516,7 @@ class PhpFormBuilder {
 
 	}
 
-	// Parses and builds the classes in multiple places
+	// Parses and builds the classes in multiple places.
 	private function _output_classes( $classes ) {
 
 		$output = '';

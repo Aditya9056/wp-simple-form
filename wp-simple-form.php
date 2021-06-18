@@ -12,7 +12,7 @@
  * Domain Path: /languages
  */
 
-require_once __DIR__ . '/includes/class-PHPFormBuilder.php';
+require_once __DIR__ . '/includes/class-FastFormPHP.php';
 require_once __DIR__ . '/admin/class-WPSimpleFormAdmin.php';
 
 if ( ! class_exists( 'WPSimpleForm' ) ) {
@@ -30,8 +30,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			add_shortcode( 'simple-short-code', array( $this, 'form' ) );
 
 			// yet to understand
-			add_action( 'admin_post_nopriv_wpsf_contact_form', array( $this, 'form_handler' ) );
-			add_action( 'admin_post_wpsf_contact_form', array( $this, 'form_handler' ) );
+			add_action( 'wp_ajax_my_action', array( $this, 'form_handler' ) );
 		}
 
 		/**
@@ -49,11 +48,12 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			wp_enqueue_script(
 				'main-script',
 				plugins_url( 'public/js/index.js', __FILE__ ),
-				array( 'wp-i18n' ),
+				array( 'wp-i18n', 'jquery' ),
 				filemtime( plugin_dir_path( __FILE__ ) . 'public/js/index.js' ),
 				true
 			);
 
+			wp_localize_script( 'main-script', 'simpleForm', array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ) ) );
 		}
 
 		/**
@@ -78,11 +78,11 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			);
 
 			// Instantiate form class.
-			$form = new PHPFormBuilder();
+			$form = new FastFormPHP();
 
 			// Set form options.
 			$form->set_att( 'action', esc_url( admin_url( 'admin-ajax.php' ) ) );
-			$form->set_att( 'add_honeypot', $atts['add_honeypot'] );
+			$form->set_att( 'add_honeypot', true );
 			$form->set_att( 'class', 'simple-form' );
 
 			// Add form inputs.
@@ -90,7 +90,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				'action',
 				array(
 					'type'  => 'hidden',
-					'value' => 'wpsf_contact_form',
+					'value' => 'simple-form',
 				),
 				'action'
 			);
@@ -100,19 +100,9 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				'wp_nonce',
 				array(
 					'type'  => 'hidden',
-					'value' => wp_create_nonce( 'submit_wp_simple_form' ),
+					'value' => wp_create_nonce( 'submit-simple-form' ),
 				),
 				'wp_nonce'
-			);
-
-			// redirect_id.
-			$form->add_input(
-				'redirect_id',
-				array(
-					'type'  => 'hidden',
-					'value' => $post->ID,
-				),
-				'redirect_id'
 			);
 
 			// date and time.
@@ -208,32 +198,37 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		public function form_handler() {
 			$post = wp_unslash( $_POST );
 
+			// A default response holder, which will have data for sending back to our js file.
+			$response = array(
+				'error' => false,
+			);
+
 			// Verify nonce.
-			if ( ! isset( $post['wp_nonce'] ) || ! wp_verify_nonce( $post['wp_nonce'], 'submit_wp_simple_form' ) ) {
+			if ( ! isset( $post['data']['wp_nonce'] ) || ! wp_verify_nonce( $post['data']['wp_nonce'], 'submit-simple-form' ) ) {
 				wp_die( __( 'No dirty tricks! ;-)', 'wp-simple-form' ) );
 			}
 
 			// Verify required fields.
-			$required_fields = array( 'name', 'phone-number', 'email', 'budget', 'message' );
+			$required_fields = array( 'name', 'phone_number', 'email', 'budget', 'message' );
 
 			foreach ( $required_fields as $field ) {
-				if ( empty( $post[ $field ] ) ) {
-					wp_die( __( 'Name, email and message fields are required.', 'wp-simple-form' ) );
+				if ( empty( $post['data'][ $field ] ) ) {
+					wp_die( __( $post['data']['email'] . 'Name, phone-number, email, budget and message fields are required.', 'wp-simple-form' ) );
 				}
 			}
 
 			// Build post arguments.
 			$postarr = array(
 				'post_author'  => 1,
-				'post_title'   => sanitize_text_field( $post['name'] ),
-				'post_content' => sanitize_textarea_field( $post['message'] ),
+				'post_title'   => sanitize_text_field( $post['data']['name'] ),
+				'post_content' => sanitize_textarea_field( $post['data']['message'] ),
 				'post_type'    => 'customer',
 				'post_status'  => 'private',
 				'meta_input'   => array(
-					'simple_form_email'        => sanitize_email( $post['email'] ),
-					'simple_form_phone_number' => sanitize_text_field( $post['phone-number'] ),
-					'simple_form_budget'       => sanitize_text_field( $post['budget'] ),
-					'simple_form_date_time'    => sanitize_text_field( $post['date-time'] ),
+					'simple_form_email'        => sanitize_email( $post['data']['email'] ),
+					'simple_form_phone_number' => sanitize_text_field( $post['data']['phone-number'] ),
+					'simple_form_budget'       => sanitize_text_field( $post['data']['budget'] ),
+					'simple_form_date_time'    => sanitize_text_field( $post['data']['date-time'] ),
 				),
 			);
 
@@ -242,30 +237,31 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 
 			if ( is_wp_error( $postid ) ) {
 				wp_die( __( 'There was problem with your submission. Please try again.', 'wp-simple-form' ) );
+			} else {
+				$success = "<div class='wp-simpleform message success'><p>%s</p></div>', __( 'Submitted successfully!', 'wp-simple-form' )";
+
+				wp_die( $success );
 			}
 
 			// Send emails to admins.
-			$to            = array();
-			$post_edit_url = sprintf( '%s?post=%s&action=edit', admin_url( 'post.php' ), $postid );
-			$admins        = get_users( array( 'role' => 'administrator' ) );
+			// $to            = array();
+			// $post_edit_url = sprintf( '%s?post=%s&action=edit', admin_url( 'post.php' ), $postid );
+			// $admins        = get_users( array( 'role' => 'administrator' ) );
 
-			foreach ( $admins as $admin ) {
-				$to[] = $admin->user_email;
-			}
-
+			// foreach ( $admins as $admin ) {
+			// $to[] = $admin->user_email;
+			// }
 			// Build the email.
-			$subject  = __( 'New feedback!', 'wp-simple-form' );
-			$message  = sprintf( '<p>%s</p>', __( 'Here are the details:', 'wp-simple-form' ) );
-			$message .= sprintf( '<p>%s: %s<br>', __( 'Name', 'wp-simple-form' ), sanitize_text_field( $post['name'] ) );
-			$message .= sprintf( '<p>%s: %s<p>', __( 'Name', 'wp-simple-form' ), sanitize_textarea_field( $post['message'] ) );
-			$message .= sprintf( '<p>%s: <a href="%s">%s</a>', __( 'View/edit the full message here', 'wp-simple-form' ), $post_edit_url, $post_edit_url );
-			$headers  = array( 'Content-Type: text/html; charset=UTF-8' );
-
+			// $subject  = __( 'New feedback!', 'wp-simple-form' );
+			// $message  = sprintf( '<p>%s</p>', __( 'Here are the details:', 'wp-simple-form' ) );
+			// $message .= sprintf( '<p>%s: %s<br>', __( 'Name', 'wp-simple-form' ), sanitize_text_field( $post['name'] ) );
+			// $message .= sprintf( '<p>%s: %s<p>', __( 'Name', 'wp-simple-form' ), sanitize_textarea_field( $post['message'] ) );
+			// $message .= sprintf( '<p>%s: <a href="%s">%s</a>', __( 'View/edit the full message here', 'wp-simple-form' ), $post_edit_url, $post_edit_url );
+			// $headers  = array( 'Content-Type: text/html; charset=UTF-8' );
+			//
 			// Send the email.
-			wp_mail( $to, $subject, $message, $headers );
+			// wp_mail( $to, $subject, $message, $headers );
 
-			// Redirect back to page.
-			wp_redirect( add_query_arg( 'status', '1', get_permalink( $post['redirect_id'] ) ) );
 		}
 	}
 }
