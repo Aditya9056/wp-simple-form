@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Simple Form
+ * Plugin Name: WP Simple Form
  * Plugin URI:  #none
  * Description: A simple form plugin for WordPress, tailored for Elegant themes.
  * Version:     0.1.0
@@ -13,31 +13,29 @@
  * php version 7.4
  */
 
-require_once __DIR__ . '/src/class-FastFormPHP.php';
-require_once __DIR__ . '/src/class-WPSimpleFormAdmin.php';
+require_once __DIR__ . '/src/class-fastformphp.php';
 
 if ( ! class_exists( 'WPSimpleForm' ) ) {
 
 	/**
-	 * Class SimpleForm
+	 * Class WpSimpleForm
 	 */
-	class SimpleForm {
-
+	class WpSimpleForm {
 
 		/**
 		 * Calling assets loading function.
 		 */
 		public function __construct() {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_shortcode( 'wp-simple-form', array( $this, 'form' ) );
-			add_action( 'wp_ajax_my_action', array( $this, 'formHandler' ) );
-			add_action( 'wp_ajax_nopriv_my_action', array( $this, 'formHandler' ) );
+			add_action( 'wp_ajax_my_action', array( $this, 'form_handler' ) );
+			add_action( 'wp_ajax_nopriv_my_action', array( $this, 'form_handler' ) );
 		}
 
 		/**
 		 * Loading assets and initialization.
 		 */
-		public function enqueueScripts() {
+		public function enqueue_scripts() {
 			wp_enqueue_style(
 				'main-style',
 				plugins_url( 'public/css/style.css', __FILE__ ),
@@ -60,7 +58,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		/**
 		 * Form code.
 		 *
-		 * @param SimpleForm $atts is for defining the attributes for the form.
+		 * @param WpSimpleForm $atts is for defining the attributes for the form.
 		 */
 		public function form( $atts ) {
 			$atts = shortcode_atts(
@@ -188,7 +186,6 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			// Status message.
 			$status = filter_input( INPUT_GET, 'status', FILTER_VALIDATE_INT );
 
-			// printf( '<div class="wp-simple-form message success"><p>%s</p></div>', __( 'Submitted successfully!', 'wp-simple-form' ) );
 			printf(
 				'<div class="wp-simple-form message success"><p>%s</p></div> <div class="main-container"><div class="check-container">
 		<div class="check-background">
@@ -202,8 +199,6 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				__( 'Submitted successfully!', 'wp-simple-form' )
 			);
 
-			// $success .= '';
-
 			// Build the form.
 			$form->build_form();
 
@@ -214,7 +209,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		/**
 		 * Handles the form submissions.
 		 */
-		public function formHandler() {
+		public function form_handler() {
 			$post = wp_unslash( $_POST );
 
 			// A default response holder, which will have data for sending back to our js file.
@@ -232,7 +227,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 
 			foreach ( $required_fields as $field ) {
 				if ( empty( $post['data'][ $field ] ) ) {
-					wp_die( __( $post['data']['email'] . 'Name, phone-number, email, budget and message fields are required.', 'wp-simple-form' ) );
+					wp_die( __( 'Name, phone-number, email, budget and message fields are required.', 'wp-simple-form' ) );
 				}
 			}
 
@@ -245,9 +240,9 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				'post_status'  => 'private',
 				'meta_input'   => array(
 					'simple_form_email'        => sanitize_email( $post['data']['email'] ),
-					'simple_form_phone_number' => sanitize_text_field( $post['data']['phone-number'] ),
+					'simple_form_phone_number' => sanitize_text_field( $post['data']['phone_number'] ),
 					'simple_form_budget'       => sanitize_text_field( $post['data']['budget'] ),
-					'simple_form_date_time'    => sanitize_text_field( $post['data']['date-time'] ),
+					'simple_form_date_time'    => sanitize_text_field( $post['data']['date_time'] ),
 				),
 			);
 
@@ -261,28 +256,8 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				wp_die( $success );
 			}
 
-			// Send emails to admins.
-			// $to            = array();
-			// $post_edit_url = sprintf( '%s?post=%s&action=edit', admin_url( 'post.php' ), $postid );
-			// $admins        = get_users( array( 'role' => 'administrator' ) );
-
-			// foreach ( $admins as $admin ) {
-			// $to[] = $admin->user_email;
-			// }
-			// Build the email.
-			// $subject  = __( 'New feedback!', 'wp-simple-form' );
-			// $message  = sprintf( '<p>%s</p>', __( 'Here are the details:', 'wp-simple-form' ) );
-			// $message .= sprintf( '<p>%s: %s<br>', __( 'Name', 'wp-simple-form' ), sanitize_text_field( $post['name'] ) );
-			// $message .= sprintf( '<p>%s: %s<p>', __( 'Name', 'wp-simple-form' ), sanitize_textarea_field( $post['message'] ) );
-			// $message .= sprintf( '<p>%s: <a href="%s">%s</a>', __( 'View/edit the full message here', 'wp-simple-form' ), $post_edit_url, $post_edit_url );
-			// $headers  = array( 'Content-Type: text/html; charset=UTF-8' );
-			//
-			// Send the email.
-			// wp_mail( $to, $subject, $message, $headers );
-
-			// wp_redirect( '&saved=1');
 		}
 	}
 }
 
-$form = new SimpleForm();
+new WpSimpleForm();

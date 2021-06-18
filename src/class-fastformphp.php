@@ -1,11 +1,14 @@
 <?php
+/**
+ * This file creates forms.
+ *
+ * @package FastFormPHP
+ */
 
-// v 0.9.0
 /**
  * Class FastFormPHP
  */
 class FastFormPHP {
-
 
 	/**
 	 * Stores all form inputs.
@@ -54,8 +57,7 @@ class FastFormPHP {
 		// Merge with arguments, if present.
 		if ( $args ) {
 			$settings = array_merge( $defaults, $args );
-		} // Otherwise, use the defaults wholesale.
-		else {
+		} else {
 			$settings = $defaults;
 		}
 
@@ -294,6 +296,7 @@ class FastFormPHP {
 
 				// Can this field be populated directly?
 				if ( ! in_array( $val['type'], array( 'html', 'title', 'radio', 'checkbox', 'select', 'submit' ), true ) ) {
+//					$val['value'] = sanitize_text_field( wp_unslash( $_REQUEST[ $val['name'] ] ) );
 					$val['value'] = $_REQUEST[ $val['name'] ];
 				}
 			}
@@ -483,13 +486,19 @@ class FastFormPHP {
 		}
 	}
 
-	// Easy way to auto-close fields, if necessary.
-	function field_close() {
+	/**
+	 * Easy way to auto-close fields, if necessary.
+	 */
+	public function field_close() {
 		return 'xhtml' === $this->form['markup'] ? ' />' : '>';
 	}
 
-	// Validates id and class attributes
-	// TODO: actually validate these things
+	/** TODO: actually validate these things */
+	/**
+	 * Easy way to auto-close fields, if necessary.
+	 *
+	 * @param FastFormPHP $string validates id and class attributes.
+	 */
 	private function _check_valid_attr( $string ) {
 
 		$result = true;
@@ -500,7 +509,11 @@ class FastFormPHP {
 		return $result;
 	}
 
-	// Create a slug from a label name.
+	/**
+	 * Create a slug from a label name.
+	 *
+	 * @param FastFormPHP $string holds the label name.
+	 */
 	private function _make_slug( $string ) {
 
 		$result = '';
@@ -516,7 +529,11 @@ class FastFormPHP {
 
 	}
 
-	// Parses and builds the classes in multiple places.
+	/**
+	 * Parses and builds the classes in multiple places.
+	 *
+	 * @param FastFormPHP $classes holds the classes data.
+	 */
 	private function _output_classes( $classes ) {
 
 		$output = '';
