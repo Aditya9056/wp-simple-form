@@ -12,8 +12,8 @@
  * Domain Path: /languages
  */
 
-require_once __DIR__ . '/includes/class-FastFormPHP.php';
-require_once __DIR__ . '/admin/class-WPSimpleFormAdmin.php';
+require_once __DIR__ . '/src/class-FastFormPHP.php';
+require_once __DIR__ . '/src/class-WPSimpleFormAdmin.php';
 
 if ( ! class_exists( 'WPSimpleForm' ) ) {
 
@@ -38,9 +38,9 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		public function enqueue_scripts() {
 			wp_enqueue_style(
 				'main-style',
-				get_stylesheet_uri(),
+				plugins_url( 'public/css/style.css', __FILE__ ),
 				array(),
-				filemtime( plugin_dir_path( __FILE__ ) . '/public/css/style.css' ),
+				'1.2.4',
 				false
 			);
 
@@ -186,9 +186,18 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			// Status message.
 			$status = filter_input( INPUT_GET, 'status', FILTER_VALIDATE_INT );
 
-			if ( $status == 1 ) {
-				printf( '<div class="wp-simpleform message success"><p>%s</p></div>', __( 'Submitted successfully!', 'wp-simple-form' ) );
-			}
+			// printf( '<div class="wp-simple-form message success"><p>%s</p></div>', __( 'Submitted successfully!', 'wp-simple-form' ) );
+			printf( '<div class="wp-simple-form message success"><p>%s</p></div> <div class="main-container"><div class="check-container">
+		<div class="check-background">
+			<svg viewBox="0 0 65 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M7 25L27.3077 44L58.5 7" stroke="white" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</div>
+		<div class="check-shadow"></div>
+	</div>
+</div>', __( 'Submitted successfully!', 'wp-simple-form' ) );
+
+//			$success .= '';
 
 			// Build the form.
 			$form->build_form();
@@ -244,7 +253,6 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 				wp_die( __( 'There was problem with your submission. Please try again.', 'wp-simple-form' ) );
 			} else {
 				$success = "<div class='wp-simpleform message success'><p>%s</p></div>', __( 'Submitted successfully!', 'wp-simple-form' )";
-
 				wp_die( $success );
 			}
 
@@ -267,6 +275,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 			// Send the email.
 			// wp_mail( $to, $subject, $message, $headers );
 
+			// wp_redirect( '&saved=1');
 		}
 	}
 }
