@@ -202,8 +202,8 @@ class FastFormPHP {
 		foreach ( $arr as $field ) {
 			$this->add_input(
 				$field[0],
-				isset( $field[1] ) ? $field[1] : '',
-				isset( $field[2] ) ? $field[2] : ''
+				$field[1] ?? '',
+				$field[2] ?? ''
 			);
 		}
 
@@ -321,7 +321,11 @@ class FastFormPHP {
 
 				case 'textarea':
 					$element = 'textarea';
-					$end     = '>' . $val['value'] . '</textarea>';
+					$end    .= $val['rows'] ? ' rows="' . $val['rows'] . '"' : '';
+					$end    .= $val['cols'] ? ' cols="' . $val['cols'] . '"' : '';
+					$end    .= $val['max'] ? ' maxlength="' . $val['max'] . '"' : '';
+					$end    .= $val['placeholder'] ? ' placeholder ="' . $val['placeholder'] . '"' : '';
+					$end     .= '>' . $val['value'] . '</textarea>';
 					break;
 
 				case 'select':
@@ -388,6 +392,8 @@ class FastFormPHP {
 					$element = 'input';
 					$end    .= ' type="' . $val['type'] . '" value="' . $val['value'] . '"';
 					$end    .= $val['checked'] ? ' checked' : '';
+					$end    .= $val['max'] ? ' maxlength="' . $val['max'] . '"' : '';
+					$end    .= $val['placeholder'] ? ' placeholder ="' . $val['placeholder'] . '"' : '';
 					$end    .= $this->field_close();
 					break;
 

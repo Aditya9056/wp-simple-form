@@ -27,10 +27,9 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		 */
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			add_shortcode( 'simple-short-code', array( $this, 'form' ) );
-
-			// yet to understand
+			add_shortcode( 'wp-simple-form', array( $this, 'form' ) );
 			add_action( 'wp_ajax_my_action', array( $this, 'form_handler' ) );
+			add_action( 'wp_ajax_nopriv_my_action', array( $this, 'form_handler' ) );
 		}
 
 		/**
@@ -62,8 +61,6 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 		 * @param SimpleForm $atts is for defining the attributes for the form.
 		 */
 		public function form( $atts ) {
-			global $post;
-
 			$atts = shortcode_atts(
 				array(
 					'add_honeypot'  => false,
@@ -72,6 +69,10 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'email_label'   => __( 'Email', 'wp-simple-form' ),
 					'budget_label'  => __( 'Desired Budget', 'wp-simple-form' ),
 					'message_label' => __( 'Message', 'wp-simple-form' ),
+					'maxlength'     => '50',
+					'msg_maxlength' => '400',
+					'rows'          => '30',
+					'cols'          => '50',
 				),
 				$atts,
 				'simple-short-code'
@@ -122,7 +123,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'type'        => 'text',
 					'placeholder' => __( 'Enter your name', 'wp-simple-form' ),
 					'required'    => true,
-					'max'         => '10',
+					'max'         => $atts['maxlength'],
 					'autofocus'   => true,
 
 				),
@@ -136,6 +137,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'type'        => 'text',
 					'placeholder' => __( 'Enter your phone number', 'wp-simple-form' ),
 					'required'    => true,
+					'max'         => $atts['maxlength'],
 				),
 				'phone-number'
 			);
@@ -147,6 +149,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'type'        => 'email',
 					'placeholder' => __( 'Enter your email address', 'wp-simple-form' ),
 					'required'    => true,
+					'max'         => $atts['maxlength'],
 				),
 				'email'
 			);
@@ -158,6 +161,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'type'        => 'text',
 					'placeholder' => __( 'Enter your desired budget', 'wp-simple-form' ),
 					'required'    => true,
+					'max'         => $atts['maxlength'],
 				),
 				'budget'
 			);
@@ -171,6 +175,7 @@ if ( ! class_exists( 'WPSimpleForm' ) ) {
 					'required'    => true,
 					'rows'        => '45',
 					'cols'        => '45',
+					'max'         => $atts['msg_maxlength'],
 				),
 				'message'
 			);

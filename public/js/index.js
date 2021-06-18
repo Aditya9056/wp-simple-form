@@ -8,7 +8,7 @@ jQuery( document ).ready(
           return false;
       }
 
-      let formData = {
+      const formData = {
         date_time: jQuery("#date-time").val(),
         wp_nonce: jQuery("#wp_nonce").val(),
         name: jQuery("#name").val(),
@@ -17,7 +17,6 @@ jQuery( document ).ready(
         budget: jQuery("#budget").val(),
         message: jQuery("#message").val(),
       };
-      // let form = jQuery( ".simple-form" ).serialize();
 
       jQuery.ajax(
 				{
