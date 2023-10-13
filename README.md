@@ -1,10 +1,3 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url] 
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -15,8 +8,7 @@
   <h3 align="center">WP Simple Form</h3>
 
   <p align="center">
-    It's a Simple WordPress plugin.
-    <!-- <a href="https://github.com/Aditya9056/wp-simple-form/issues">Request Feature</a> -->
+    It's a simple WordPress plugin to create Forms.
   </p>
 </p>
 
@@ -52,26 +44,27 @@
 
 It's a wordpress form plugin that can be used via a shortcode `wp-simple-form` that will render these 5 fields by default.
 
-* Name
-* Phone Number
-* Email Address
-* Desired Budget
-* Message
+- Name
+- Phone Number
+- Email Address
+- Desired Budget
+- Message
 
 ### Built With
 
-* JavaScript ES Next
-* PHP
-* WordPress
+- JavaScript ES Next
+- PHP
+- WordPress
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-* WordPress Installed
+- WordPress Installed
 
 ### Features
 
@@ -99,39 +92,39 @@ As we said shortcode is `wp-simple-form`.
 
 Label Parameters:-
 
-* `name_label`
-* `phone_label`
-* `email_label`
-* `budget_label`
-* `message_label`
-  
+- `name_label`
+- `phone_label`
+- `email_label`
+- `budget_label`
+- `message_label`
+
 ### E.g. usage for `name_label`
 
-  ```php
-  [wp-simple-form name_label="A New Label"]
-  ```
+```php
+[wp-simple-form name_label="A New Label"]
+```
 
 `Maxlength` Parameters:-
 
-* `maxlength` default is `50`, it covers name, phone-number, email and budget.
-* `msg_maxlength` default is `400`, it covers message(`texarea`).
+- `maxlength` default is `50`, it covers name, phone-number, email and budget.
+- `msg_maxlength` default is `400`, it covers message(`texarea`).
 
 ### E.g. usage for `maxlength`
 
-  ```php
-  [wp-simple-form maxlength="30"]
-  ```
+```php
+[wp-simple-form maxlength="30"]
+```
 
 `rows` and `cols` Parameters for `textarea`:-
 
-* `rows` default is `30`, it defines rows.
-* `cols` default is `50`, it defines columns.
+- `rows` default is `30`, it defines rows.
+- `cols` default is `50`, it defines columns.
 
 ### E.g. usage for `rows` and `cols`
 
-  ```php
-  [wp-simple-form rows="40" cols="60"]
-  ```
+```php
+[wp-simple-form rows="40" cols="60"]
+```
 
 ## Forms Parameter Include
 
@@ -146,7 +139,7 @@ Label Parameters:-
 To grab form fields value use this simple snippet in developer console.
 
 ```javascript
-jQuery('#name').val()
+jQuery('#name').val();
 ```
 
 ## Roadmap
@@ -156,10 +149,11 @@ See the [open issues](https://github.com/aditya9056/wp-simple-form/issues) for a
 ## Contributing
 
 ### Coding Standards
-* WordPress (WPCS)
+
+- WordPress (WPCS)
 
 #### `phpcs` may show some errors but you can safely ignore them for now.
-  
+
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -171,22 +165,3 @@ Contributions are what make the open source community such an amazing place to b
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-
-[contributors-shield]: https://img.shields.io/github/contributors/Aditya9056/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/Aditya9056/wp-simple-form/graphs/contributors
-
-[forks-shield]: https://img.shields.io/github/forks/Aditya9056/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/Aditya9056/wp-simple-form/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/Aditya9056/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/Aditya9056/wp-simple-form/stargazers
-
-[issues-shield]: https://img.shields.io/github/issues/Aditya9056/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/Aditya9056/wp-simple-form/issues
-
-[license-shield]: https://img.shields.io/github/license/Aditya9056/a-wordpress-theme.svg?style=for-the-badge
-[license-url]: https://github.com/Aditya9056/wp-simple-form/blob/master/LICENSE.txt
-
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/iadityajain
